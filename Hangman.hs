@@ -31,6 +31,16 @@ main = do
   putStr instructions 
   runStateT startNewGame undefined 
   return () 
+  
+  Words <- getWords =<< (getDataFileName "4words.txt")
+  (randomIndex,_) <- return . randomR (0,length Words) =<< newStdGen
+  let chosenWord = Words !! randomIndex
+  --putStrLn introMessage
+  putStr "\n\n"
+  _ <- execStateT runHangman $ startingGameState chosenWord
+  return ()
+  where 
+	getWords filePath = return . concatMap words . lines =<< readFile filePath
 
 startNewGame :: StateT GameState IO () 
 startNewGame = do 
@@ -127,8 +137,8 @@ handleGuess ch state =
                     gsWrong = wrong, 
                     gsWonLost = filt not (wrong < 7)} 
 
-wordList :: [String] 
-wordList = ["alligator", "angelfish", "ant", "bear", "buffalo", 
+{- wordList :: [String] 
+   wordList = ["alligator", "angelfish", "ant", "bear", "buffalo", 
             "butterfly", "canary", "chameleon", "crab", "dinosaur", 
             "dog", "dolphin", "eel", "elephant", "flamingo", "frog", 
             "giraffe", "goldfish", "grasshopper", "hedgehog", 
@@ -141,6 +151,7 @@ wordList = ["alligator", "angelfish", "ant", "bear", "buffalo",
             "uakari", "unicorn", "vampire bat", "vulture", "walrus", 
             "wildebeest", "worm", "xenops", "yak", "yellow jacket", 
             "zebra"] --fix wordlist to file
+-}
 
 renderGameState :: GameState -> String 
 renderGameState gs = 
