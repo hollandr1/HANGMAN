@@ -36,8 +36,8 @@ main = do
   (randomIndex,_) <- return . randomR (0,length Words) =<< newStdGen
   let chosenWord = Words !! randomIndex
   --putStrLn introMessage
-  putStr "\n\n"
-  _ <- execStateT runHangman $ startingGameState chosenWord
+  -- putStr "\n\n"
+  _ <- execStateT startNewGame $ newGameState chosenWord
   return ()
   where 
 	getWords filePath = return . concatMap words . lines =<< readFile filePath
