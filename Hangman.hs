@@ -1,5 +1,6 @@
 import Data.Char 
 import Data.List 
+import Data.List.HT
 import System.IO 
 import System.Random 
 import Control.Monad.State 
@@ -32,9 +33,9 @@ main = do
   runStateT startNewGame undefined 
   return () 
   
-  Words <- getWords =<< (getDataFileName "4words.txt")
-  (randomIndex,_) <- return . randomR (0,length Words) =<< newStdGen
-  let chosenWord = Words !! randomIndex
+  wordList <- getWords =<< (getDataFileName "4words.txt")
+  (randomIndex,_) <- return . randomR (0,length gsAnswer) =<< newStdGen
+  let chosenWord = gsAnswer !! randomIndex
   --putStrLn introMessage
   -- putStr "\n\n"
   _ <- execStateT startNewGame $ newGameState chosenWord
@@ -44,9 +45,9 @@ main = do
 
 startNewGame :: StateT GameState IO () 
 startNewGame = do 
-  nWord <- liftIO $ getStdRandom (randomR (0,length wordList - 1)) 
-  let word = wordList !! nWord 
-  let gs = newGameState word 
+  wordList <- liftIO $ getStdRandom (randomR (0,length gsAnswer - 1)) 
+  let word = wordList !! gsAnswer
+  let gs = newGameState gsAnswer
   put gs 
   liftIO $ putStrLn $ renderGameState gs 
   gameLoop 
