@@ -1,6 +1,5 @@
 import Data.Char 
-import Data.List 
-import Data.List.HT
+import Data.List
 import System.IO 
 import System.Random 
 import Control.Monad.State 
@@ -31,26 +30,31 @@ main = do
   putStr "Welcome to Hangman!\n\n" 
   putStr instructions 
   runStateT startNewGame undefined 
-  return () 
-  
-  wordList <- getWords =<< (getDataFileName "4words.txt")
-  (randomIndex,_) <- return . randomR (0,length gsAnswer) =<< newStdGen
-  let chosenWord = gsAnswer !! randomIndex
-  --putStrLn introMessage
-  -- putStr "\n\n"
-  _ <- execStateT startNewGame $ newGameState chosenWord
   return ()
-  where 
-	getWords filePath = return . concatMap words . lines =<< readFile filePath
+
+getFileName :: FilePath -> IO FilePath 
+getFileName = return . ("\\" ++)
 
 startNewGame :: StateT GameState IO () 
 startNewGame = do 
-  wordList <- liftIO $ getStdRandom (randomR (0,length gsAnswer - 1)) 
-  let word = wordList !! gsAnswer
-  let gs = newGameState gsAnswer
+  wordList <- getWords =<< (getFileName "4words.txt")
+  (randomIndex,_) <- return . randomR (0,length wordList) =<< newStdGen
+  let nWord = gsAnswer !! randomIndex
+  --putStrLn introMessage
+  -- putStr "\n\n"
+  --_ <- execStateT startNewGame $ newGameState chosenWord
+  --return ()
+  
+--nWord <- liftIO $ getStdRandom (randomR (0,length wordList - 1)) 
+--let word = wordList !! nWord
+  let gs = newGameState nWord
   put gs 
   liftIO $ putStrLn $ renderGameState gs 
-  gameLoop 
+  gameLoop
+
+ where 
+	getWords filePath = return . concatMap words . lines =<< readFile filePath
+
 
 gameLoop :: StateT GameState IO () 
 gameLoop = do 
