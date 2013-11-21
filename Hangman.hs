@@ -31,15 +31,17 @@ main = do
   putStr instructions 
   runStateT startNewGame undefined 
   return ()
-{-
---getFileName :: FilePath -> IO
---getFileName = return .
--}
+
+getFileName :: FilePath -> IO FilePath
+getFileName = return . ("/" ++)
+
 startNewGame :: StateT GameState IO() 
 startNewGame = do 
- --wordList <- getWords =<< (return . "4words.txt")
- (randomIndex,_) <- return . randomR (0,length wordList) =<< newStdGen 
- let gsAnswer = wordList !! randomIndex
+ nWord <- liftIO $ getStdRandom (randomR (0,length wordList - 1)) 
+ let word = wordList !! nWord 
+ let gs = newGameState word 
+ put gs 
+ liftIO $ putStrLn $ renderGameState gs 
  gameLoop
 
 gameLoop :: StateT GameState IO() 
@@ -129,10 +131,11 @@ handleGuess ch state =
                     gsWonLost = filt not (wrong < 7)} 
 
 wordList :: [String]
-wordList = return . concatMap words . lines =<< "4words.txt"
- where 
-	getWords filePath = return . concatMap words . lines =<< readFile filePath
-{-   wordList = <- ["alligator", "angelfish", "ant", "bear", "buffalo", 
+wordList = getWords =<< (getFileName "4words.txt")
+ where
+ getWords filePath = return . concatMap words . lines =<< readFile filePath
+
+{- wordList = <- ["alligator", "angelfish", "ant", "bear", "buffalo", 
             "butterfly", "canary", "chameleon", "crab", "dinosaur", 
             "dog", "dolphin", "eel", "elephant", "flamingo", "frog", 
             "giraffe", "goldfish", "grasshopper", "hedgehog", 
