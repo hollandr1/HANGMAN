@@ -27,7 +27,9 @@ data UserInput = UIGuess Char | UIQuit | UINewGame | UIRefresh
 main :: IO () 
 main = do 
   hSetBuffering stdout NoBuffering 
-  putStr "Welcome to Hangman!\n\n" 
+  putStrLn $ "*---------------------------*
+  putStrLn $ "|    Welcome to Hangman!    |
+  putStrLn $ "*---------------------------*
   putStr instructions 
   runStateT startNewGame undefined 
   return ()
