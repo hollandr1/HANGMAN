@@ -34,6 +34,7 @@ addGuessToWord w w1 c
     | ifContain w c = buildW1 w1 c (posChar w c)
     | otherwise = w1
 
+-- Building the Word
 buildW1 :: [Char] -> Char -> [Bool] -> [Char]
 buildW1 (x:[]) c (p:[])
     | x == '_' && p == True = c:[]
@@ -51,7 +52,9 @@ callHangman n wrd wrd1 ' ' = do
     putStr ("Guess (Left " ++ (show $ n)++") : ")
     guess <- getChar
     callHangman (n) wrd wrd1 guess
-    
+  
+--Basic Game Flow
+  
 {- No attempt left, you are dead -}
 callHangman 0 wrd wrd1 c = do putStrLn $ "Dead." ++ "Word was : " ++ wrd
 {- Attempts left, play on! -}
