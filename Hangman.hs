@@ -12,7 +12,7 @@ data GameState = GameState {
       gsKnown   :: [Maybe Char], -- partial answer known to the user 
       gsGuesses :: [Char],       -- incorrect letters guessed so far 
       gsWrong   :: Int,          -- number of incorrect guesses 
-      gsWonLost :: Maybe Bool    -- Just true = won, Just false = lost 
+      gsWonLost :: Maybe Bool    -- Just true = won, Just false = lost
     } 
   deriving (Show) 
 
@@ -28,6 +28,7 @@ data UserInput = UIGuess Char | UIQuit | UINewGame | UIRefresh
   deriving (Show) 
 
   --Gets the Random Word out of the file
+randomWord :: IO String -> [String]
 randomWord wordList = do
    let ls = lines wordList
    let maxLines = length ls
@@ -36,8 +37,8 @@ randomWord wordList = do
    
 main :: IO () 
 main = do 
-  wordList <- readFile "./4words.txt"
-  ranWord <- randomWord wordList --Calls the randomWord function on wordList, then, assigns that to ranWord (the random word)
+--wordList <- readFile "./4words.txt"
+--ranWord <- randomWord wordList --Calls the randomWord function on wordList, then, assigns that to ranWord (the random word)
   hSetBuffering stdout NoBuffering 
   putStrLn $ "*---------------------------*"
   putStrLn $ "|    Welcome to Hangman!    |"
@@ -52,10 +53,12 @@ main = do
 
 --This should change as well?
 startNewGame :: StateT GameState IO() 
-startNewGame = do 
+startNewGame =  do
 -- nWord <- liftIO $ getStdRandom (randomR (0,length wordList - 1)) 
--- let word = wordList !! nWord 
- let gs = newGameState word 
+-- let word = wordList !! nWord
+ let wordList = readFile "./4words.txt"
+ ranWord <- randomWord wordList
+ let gs = newGameState ranWord 
  put gs 
  liftIO $ putStrLn $ renderGameState gs 
  gameLoop
@@ -128,7 +131,6 @@ instructions =
  ++ "  :? = show instructions\n" 
  ++ "\n" 
 
- -- Necessary ?
 filt :: (a -> Bool) -> a -> Maybe a 
 filt pred x = if pred x then Just x else Nothing 
 
@@ -148,10 +150,10 @@ handleGuess ch state =
                     gsWrong = wrong, 
                     gsWonLost = filt not (wrong < 7)} 
 
-{-					
-wordList :: [String]
-wordList = getWords =<< (getFileName "4words.txt")
- where
+					
+{-wordList :: [String]
+--wordList = getWords =<< (getFileName "4words.txt")
+where
  getWords filePath = return . concatMap words . lines =<< readFile filePath
 -}
 {- wordList = <- ["alligator", "angelfish", "ant", "bear", "buffalo", 
