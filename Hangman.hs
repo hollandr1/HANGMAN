@@ -4,6 +4,9 @@ import System.IO
 import System.Random 
 import Control.Monad.State 
 
+--Strictly testing 11/22
+import qualified Data.List as L
+
 data GameState = GameState { 
       gsAnswer  :: String,       -- the answer 
       gsKnown   :: [Maybe Char], -- partial answer known to the user 
@@ -24,23 +27,34 @@ newGameState answer = GameState{
 data UserInput = UIGuess Char | UIQuit | UINewGame | UIRefresh 
   deriving (Show) 
 
+  --Gets the Random Word out of the file
+randomWord wordList = do
+   let ls = lines wordList
+   let maxLines = length ls
+   ns <- randomRIO (0, maxLines)
+   return (ls !! ns) 
+   
 main :: IO () 
 main = do 
+  wordList <- readFile "./4words.txt"
+  ranWord <- randomWord wordList --Calls the randomWord function on wordList, then, assigns that to ranWord (the random word)
   hSetBuffering stdout NoBuffering 
-  putStrLn $ "*---------------------------*
-  putStrLn $ "|    Welcome to Hangman!    |
-  putStrLn $ "*---------------------------*
+  putStrLn $ "*---------------------------*"
+  putStrLn $ "|    Welcome to Hangman!    |"
+  putStrLn $ "*---------------------------*"
   putStr instructions 
-  runStateT startNewGame undefined 
+  runStateT startNewGame undefined --Starts the Game
   return ()
 
-getFileName :: FilePath -> IO FilePath
-getFileName = return . ("/" ++)
+--getFileName :: FilePath -> IO FilePath
+--getFileName = return . ("/" ++)
 
+
+--This should change as well?
 startNewGame :: StateT GameState IO() 
 startNewGame = do 
- nWord <- liftIO $ getStdRandom (randomR (0,length wordList - 1)) 
- let word = wordList !! nWord 
+-- nWord <- liftIO $ getStdRandom (randomR (0,length wordList - 1)) 
+-- let word = wordList !! nWord 
  let gs = newGameState word 
  put gs 
  liftIO $ putStrLn $ renderGameState gs 
@@ -114,9 +128,11 @@ instructions =
  ++ "  :? = show instructions\n" 
  ++ "\n" 
 
+ -- Necessary ?
 filt :: (a -> Bool) -> a -> Maybe a 
 filt pred x = if pred x then Just x else Nothing 
 
+--handles guessing the word 
 handleGuess :: Char -> GameState -> GameState 
 handleGuess ch state = 
     if (elem ch $ gsGuesses state) 
@@ -132,11 +148,12 @@ handleGuess ch state =
                     gsWrong = wrong, 
                     gsWonLost = filt not (wrong < 7)} 
 
+{-					
 wordList :: [String]
 wordList = getWords =<< (getFileName "4words.txt")
  where
  getWords filePath = return . concatMap words . lines =<< readFile filePath
-
+-}
 {- wordList = <- ["alligator", "angelfish", "ant", "bear", "buffalo", 
             "butterfly", "canary", "chameleon", "crab", "dinosaur", 
             "dog", "dolphin", "eel", "elephant", "flamingo", "frog", 
