@@ -4,6 +4,8 @@ import System.IO
 import System.Random 
 import Control.Monad.State 
 
+
+
 --Strictly testing 11/22
 import qualified Data.List as L
 
@@ -15,6 +17,8 @@ data GameState = GameState {
       gsWonLost :: Maybe Bool    -- Just true = won, Just false = lost
     } 
   deriving (Show) 
+
+
 
 newGameState :: String -> GameState 
 newGameState answer = GameState{ 
@@ -28,12 +32,13 @@ data UserInput = UIGuess Char | UIQuit | UINewGame | UIRefresh
   deriving (Show) 
 
   --Gets the Random Word out of the file
-randomWord :: IO String -> [String]
+randomWord :: IO [String] -> IO String
 randomWord wordList = do
-   let ls = lines wordList
-   let maxLines = length ls
-   ns <- randomRIO (0, maxLines)
-   return (ls !! ns) 
+   words <- wordList
+--   let ls = unlines words
+   let maxLines = length words
+   index <- randomRIO (0, maxLines)
+   return (words !! index) 
    
 main :: IO () 
 main = do 
@@ -45,6 +50,7 @@ main = do
   putStrLn $ "*---------------------------*"
   putStr instructions 
   runStateT startNewGame undefined --Starts the Game
+--  startNewGame
   return ()
 
 --getFileName :: FilePath -> IO FilePath
@@ -57,13 +63,14 @@ startNewGame =  do
 -- nWord <- liftIO $ getStdRandom (randomR (0,length wordList - 1)) 
 -- let word = wordList !! nWord
  let wordList = readFile "./4words.txt"
- ranWord <- randomWord wordList
+ let dict = liftM lines wordList
+ ranWord <- randomWord dict
  let gs = newGameState ranWord 
  put gs 
  liftIO $ putStrLn $ renderGameState gs 
  gameLoop
 
-gameLoop :: StateT GameState IO() 
+--gameLoop :: StateT GameState IO() 
 gameLoop = do 
   ui <- liftIO getUserInput 
   case ui of 
