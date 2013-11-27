@@ -130,7 +130,7 @@ handleGuess ch state =
       else let wrong = 1 + (gsWrong state) 
            in state{gsGuesses = ch:(gsGuesses state), 
                     gsWrong = wrong, 
-                    gsWonLost = filt not (wrong < 7)} 
+                    gsWonLost = filt not (wrong < 11)} 
 
 wordList :: IO [String]
 wordList = getWords =<< (return "4words.txt")
@@ -149,28 +149,28 @@ renderGameState gs =
 
 renderNoose :: Int -> [String] 
 renderNoose n | n <= 0 = [ 
- "   ___     ", 
- "  /   |    ", 
+ "           ", 
+ "           ", 
+ "           ", 
+ "           ", 
+ "           ", 
+ "           ", 
+ "           ", 
+ " -+-       "]
+renderNoose 1 = [
+ "           ", 
+ "           ", 
  "  |        ", 
  "  |        ", 
  "  |        ", 
  "  |        ", 
  "  |        ", 
  " -+-       "] 
-renderNoose 1 = [ 
+renderNoose 2 = [
  "   ___     ", 
  "  /   |    ", 
- "  |   O    ", 
  "  |        ", 
  "  |        ", 
- "  |        ", 
- "  |        ", 
- " -+-       "] 
-renderNoose 2 = [ 
- "   ___     ", 
- "  /   |    ", 
- "  |   O    ", 
- "  |   |    ", 
  "  |        ", 
  "  |        ", 
  "  |        ", 
@@ -179,7 +179,7 @@ renderNoose 3 = [
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
- "  | --|    ", 
+ "  |        ", 
  "  |        ", 
  "  |        ", 
  "  |        ", 
@@ -188,7 +188,7 @@ renderNoose 4 = [
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
- "  | --|--  ", 
+ "  |   |    ", 
  "  |        ", 
  "  |        ", 
  "  |        ", 
@@ -197,8 +197,8 @@ renderNoose 5 = [
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
- "  | --|--  ", 
- "  |   |    ", 
+ "  | --|    ", 
+ "  |        ", 
  "  |        ", 
  "  |        ", 
  " -+-       "] 
@@ -207,16 +207,53 @@ renderNoose 6 = [
  "  /   |    ", 
  "  |   O    ", 
  "  | --|--  ", 
+ "  |        ", 
+ "  |        ", 
+ "  |        ", 
+ " -+-       "] 
+renderNoose 7 = [ 
+ "   ___     ", 
+ "  /   |    ", 
+ "  |   O    ", 
+ "  | --|--  ", 
+ "  |   |    ", 
+ "  |        ", 
+ "  |        ", 
+ " -+-       "] 
+renderNoose 8 = [ 
+ "   ___     ", 
+ "  /   |    ", 
+ "  |   O    ", 
+ "  | --|--  ", 
  "  |   |    ", 
  "  |  /     ", 
  "  |        ", 
  " -+-       "] 
-renderNoose n | n >= 7 = [ 
+renderNoose 9 = [
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
  "  | --|--  ", 
  "  |   |    ", 
  "  |  / \\   ", 
+ "  |        ", 
+ " -+-       "] 
+
+renderNoose 10 = [
+ "   ___     ", 
+ "  /   |    ", 
+ "  |   O    ", 
+ "  | --|--  ", 
+ "  |   |    ", 
+ "  | _/ \\  ", 
+ "  |        ", 
+ " -+-       "] 
+renderNoose n | n >= 11 = [ 
+ "   ___     ", 
+ "  /   |    ", 
+ "  |   O    ", 
+ "  | --|--  ", 
+ "  |   |    ", 
+ "  | _/ \\_  ", 
  "  |        ", 
  " -+-       "] 
