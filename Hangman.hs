@@ -157,6 +157,7 @@ renderNoose n | n <= 0 = [
  "           ", 
  "           ", 
  " -+-       "]
+ --putStrLn $ noose
 renderNoose 1 = [
  "           ", 
  "           ", 
