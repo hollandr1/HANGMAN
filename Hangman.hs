@@ -1,7 +1,8 @@
 import Data.Char 
 import Data.List
 import System.IO 
-import System.Random 
+import System.Random
+import System.Process
 import Control.Monad.State 
 
 data GameState = GameState { 
@@ -25,13 +26,14 @@ data UserInput = UIGuess Char | UIQuit | UINewGame | UIRefresh
   deriving (Show) 
 
 main :: IO () 
-main = do 
+main = do
+  system "cls"
   hSetBuffering stdout NoBuffering 
-  putStrLn $ "*---------------------------*"
-
-  putStrLn $ "|    Welcome to Hangman!    |"
-
-  putStrLn $ "*---------------------------*"
+  putStrLn $ "*------------------------------------------------------------------------------*"
+  putStrLn $ "|                                                                              |"
+  putStrLn $ "|                              Welcome to Hangman!                             |"
+  putStrLn $ "|                                                                              |"
+  putStrLn $ "*------------------------------------------------------------------------------*"
   putStr instructions 
   runStateT startNewGame undefined 
   return ()
@@ -47,10 +49,10 @@ startNewGame = do
  gameLoop
 
 gameLoop :: StateT GameState IO() 
-gameLoop = do 
-  ui <- liftIO getUserInput 
+gameLoop = do
+  ui <- liftIO getUserInput
   case ui of 
-    UIGuess c -> do 
+    UIGuess c -> do
       modify $ handleGuess c 
       gs <- get 
       liftIO $ putStrLn $ renderGameState gs 
@@ -73,8 +75,8 @@ gameLoop = do
       startNewGame 
     UIRefresh -> do 
       gs <- get 
-      liftIO $ putStrLn $ renderGameState gs 
-      gameLoop 
+      liftIO $ putStrLn $ renderGameState gs
+      gameLoop
 
 getUserInput :: IO UserInput 
 getUserInput = do 
@@ -118,7 +120,7 @@ filt :: (a -> Bool) -> a -> Maybe a
 filt pred x = if pred x then Just x else Nothing 
 
 handleGuess :: Char -> GameState -> GameState 
-handleGuess ch state = 
+handleGuess ch state =
     if (elem ch $ gsGuesses state) 
       then state 
       else 
@@ -135,20 +137,20 @@ handleGuess ch state =
 wordList :: IO [String]
 wordList = getWords =<< (return "4words.txt")
  where
-
   getWords filePath = return . concatMap words . lines =<< readFile filePath
 
 
 renderGameState :: GameState -> String 
-renderGameState gs = 
+renderGameState gs =
     let noose = renderNoose $ gsWrong gs 
         report = ["","The Word:","",word,"","Your Guesses:","",guessed] 
         word = intersperse ' ' $ map (maybe '_' id) (gsKnown gs) 
         guessed = gsGuesses gs 
-    in (concat $ zipWith (++) noose $ map (++ "\n") report) 
+    in (concat $ zipWith (++) noose $ map (++ "\n") report)
+
 
 renderNoose :: Int -> [String] 
-renderNoose n | n <= 0 = [ 
+renderNoose n | n <= 0 =[ 
  "           ", 
  "           ", 
  "           ", 
@@ -249,7 +251,7 @@ renderNoose 10 = [
  "  | _/ \\  ", 
  "  |        ", 
  " -+-       "] 
-renderNoose n | n >= 11 = [ 
+renderNoose n | n >= 11 = [ --added feet
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
