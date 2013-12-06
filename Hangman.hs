@@ -142,15 +142,15 @@ wordList = getWords =<< (return "4words.txt")
 
 renderGameState :: GameState -> String 
 renderGameState gs =
-    let noose = renderNoose $ gsWrong gs 
+    let noose = answer $ gsWrong gs 
         report = ["","The Word:","",word,"","Your Guesses:","",guessed] 
         word = intersperse ' ' $ map (maybe '_' id) (gsKnown gs) 
         guessed = gsGuesses gs 
     in (concat $ zipWith (++) noose $ map (++ "\n") report)
 
 
-renderNoose :: Int -> [String] 
-renderNoose n | n <= 0 =[ 
+answer :: Int -> [String] 
+answer n | n <= 0 =[ 
  "           ", 
  "           ", 
  "           ", 
@@ -160,7 +160,7 @@ renderNoose n | n <= 0 =[
  "           ", 
  " -+-       "]
  --putStrLn $ noose
-renderNoose 1 = [
+answer 1 = [
  "           ", 
  "           ", 
  "  |        ", 
@@ -169,7 +169,7 @@ renderNoose 1 = [
  "  |        ", 
  "  |        ", 
  " -+-       "] 
-renderNoose 2 = [
+answer 2 = [
  "   ___     ", 
  "  /   |    ", 
  "  |        ", 
@@ -178,7 +178,7 @@ renderNoose 2 = [
  "  |        ", 
  "  |        ", 
  " -+-       "] 
-renderNoose 3 = [ 
+answer 3 = [ 
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
@@ -187,7 +187,7 @@ renderNoose 3 = [
  "  |        ", 
  "  |        ", 
  " -+-       "] 
-renderNoose 4 = [ 
+answer 4 = [ 
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
@@ -196,7 +196,7 @@ renderNoose 4 = [
  "  |        ", 
  "  |        ", 
  " -+-       "] 
-renderNoose 5 = [ 
+answer 5 = [ 
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
@@ -205,7 +205,7 @@ renderNoose 5 = [
  "  |        ", 
  "  |        ", 
  " -+-       "] 
-renderNoose 6 = [ 
+answer 6 = [ 
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
@@ -214,7 +214,7 @@ renderNoose 6 = [
  "  |        ", 
  "  |        ", 
  " -+-       "] 
-renderNoose 7 = [ 
+answer 7 = [ 
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
@@ -223,7 +223,7 @@ renderNoose 7 = [
  "  |        ", 
  "  |        ", 
  " -+-       "] 
-renderNoose 8 = [ 
+answer 8 = [ 
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
@@ -232,7 +232,7 @@ renderNoose 8 = [
  "  |  /     ", 
  "  |        ", 
  " -+-       "] 
-renderNoose 9 = [
+answer 9 = [
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
@@ -242,7 +242,7 @@ renderNoose 9 = [
  "  |        ", 
  " -+-       "] 
 
-renderNoose 10 = [
+answer 10 = [
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
@@ -251,7 +251,7 @@ renderNoose 10 = [
  "  | _/ \\  ", 
  "  |        ", 
  " -+-       "] 
-renderNoose n | n >= 11 = [ --added feet
+answer n | n >= 11 = [ --added feet
  "   ___     ", 
  "  /   |    ", 
  "  |   O    ", 
